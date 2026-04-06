@@ -1,0 +1,11 @@
+data/
+error_visualization/
+logs/
+result/
+weights/*
+!weights/best_simple_model.pth
+!weights/best_resnet18_model.pth
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store
+.vscode/
