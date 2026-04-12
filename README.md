@@ -1,3 +1,8 @@
+![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white)
+![Python](https://img.shields.io/badge/python-3.11.14-blue.svg)
+![Computer Vision](https://img.shields.io/badge/Area-Computer%20Vision-success)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+
 ## 1. Introduction and Problem Statement
 
 ### Overview
