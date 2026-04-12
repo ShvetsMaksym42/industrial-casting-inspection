@@ -289,5 +289,6 @@ To improve both precision and computational efficiency, I propose a two-stage in
 * **Stage 2 (Localization):** Only if a part is flagged as defective, a **YOLO-based object detection** model is triggered to draw precise bounding boxes around specific flaws.
 * **Evaluation:** A comparative study will be conducted to measure the trade-offs between a standalone YOLO model versus this **CNN-YOLO cascade** in terms of latency (ms/image) and industrial practicality.
 
+---
 
 > **P.S.** Full source code, training scripts, and comprehensive visualization logs are available in this repository for reference; the **Custom CNN** weights are included here, while the **ResNet18** model can be found at [this link](https://drive.google.com/file/d/12v_llowvkEUnrz8_rUohmBaaeAPk7aOG/view?usp=drive_link).
