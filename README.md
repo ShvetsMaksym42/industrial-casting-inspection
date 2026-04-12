@@ -245,7 +245,24 @@ This indicates that the model's "error" was actually a correct identification of
 ---
 
 ## 5. Performance Summary
-(coming soon)
+
+The final comparison shows that the **Custom CNN** achieves industrial-grade performance while remaining significantly more efficient than the standard **ResNet18** baseline.
+
+### Comparative Analysis
+
+| Metric | ResNet18 (Baseline) | Custom CNN (Final) | Difference |
+| :--- | :--- | :--- | :--- |
+| **Test Accuracy** | 100% | 99.6% | ~Same |
+| **Total Parameters** | 11.17M | **0.69M** | **16x smaller** |
+| **Trained Model Size (.pth)** | 64.5 MB | **4 MB** | **16x lighter** |
+| **Visual Logic** | Correct (Defect-focused) | Correct (Defect-focused) | Identical quality |
+| **Computational Cost** | High | **Low** | Optimized for Edge |
+
+### Key Observations
+
+* **Computational Efficiency:** While both models successfully learned to identify defects (confirmed by Grad-CAM diagnostics), the Custom CNN achieves this with only **0.69M parameters**. This makes it much more suitable for integration into low-power industrial cameras or real-time monitoring systems.
+* **Robustness vs. Noise:** Both architectures proved resilient and focused on actual defect morphology rather than background artifacts. The slight difference in accuracy (0.4%) is attributed to the Custom CNN's more rigid generalization.
+* **Production Ready:** The massive reduction in disk space (**4 MB vs 64.5 MB**) allows for faster deployment, easier updates over-the-air (OTA), and significantly lower memory overhead during inference.
 
 ---
 
@@ -271,3 +288,6 @@ To improve both precision and computational efficiency, I propose a two-stage in
 * **Stage 1 (Filtering):** The lightweight **Custom CNN** acts as a high-speed gatekeeper, identifying whether a part is "Normal" or "Defective."
 * **Stage 2 (Localization):** Only if a part is flagged as defective, a **YOLO-based object detection** model is triggered to draw precise bounding boxes around specific flaws.
 * **Evaluation:** A comparative study will be conducted to measure the trade-offs between a standalone YOLO model versus this **CNN-YOLO cascade** in terms of latency (ms/image) and industrial practicality.
+
+
+> **P.S.** Full source code, training scripts, and comprehensive visualization logs are available in this repository for reference; the **Custom CNN** weights are included here, while the **ResNet18** model can be found at [this link](https://drive.google.com/file/d/12v_llowvkEUnrz8_rUohmBaaeAPk7aOG/view?usp=drive_link).
