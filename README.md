@@ -7,7 +7,7 @@ Traditional manual inspection suffers from:
 * **Scalability:** On high-speed production lines, humans physically cannot inspect every single part.
 * **Cost:** Maintaining a large staff of inspectors is expensive for the enterprise.
 
-This project demonstrates the use of **Computer Vision (CV)** to automate the classification of casting parts into **"OK"** (defective-free) and **"Defective"** categories.
+This project demonstrates the use of **Computer Vision (CV)** to automate the classification of casting parts into **"OK"** (defect-free) and **"Defective"** categories.
 
 ### The Challenge (Accuracy vs. Resources)
 Automation in this field faces a classic engineering dilemma:
@@ -135,12 +135,12 @@ To verify the reliability of the high accuracy scores, I applied **Grad-CAM** to
 **Results:**
 * **ResNet18:** The attention was precisely localized on the defect regions. This confirmed that the model was genuinely identifying casting flaws rather than memorizing background artifacts.
 <p align="center">
-  <img src="media/heatmaps/resnet18/model_resnet18_error_140_FN.jpg" width="400">
+  <img src="media/heatmaps/resnet18/model_resnet18_error_140_FN.jpg" width="700">
 </p>
 
 * **Custom Model (v1):** Despite the high accuracy (99.6%), the attention was **scattered and unfocused**. The model was not looking at the defects, indicating a form of underfitting where the architecture lacked the capacity to extract the correct features.
 <p align="center">
-  <img src="media/heatmaps/simple_model(failed)1/model_simple_error_240_FN.jpg" width="400">
+  <img src="media/heatmaps/simple_model(failed)1/model_simple_error_240_FN.jpg" width="700">
 </p>
 
 **Decision:**
@@ -159,7 +159,7 @@ Following the insights from Grad-CAM, I decided to increase the model's capacity
 * **Test Accuracy:** **100%**
 * **The Reality Check:** Despite the perfect score, **Grad-CAM visualizations** showed the model was focusing on irrelevant background regions rather than the defects themselves.
 <p align="center">
-  <img src="media/heatmaps/simple_model(failed)2/model_simple_error_180_FN.jpg" width="400">
+  <img src="media/heatmaps/simple_model(failed)2/model_simple_error_180_FN.jpg" width="700">
 </p>
 
 **Key Insight:**
@@ -179,7 +179,7 @@ To combat the persistent overfitting observed in the previous stage, I significa
 * **Test Accuracy:** **100%**
 * **Analysis:** Despite the heavy regularization and aggressive noise, **Grad-CAM visualizations** revealed that the model's attention remained centered and failed to precisely lock onto the actual defect regions.
 <p align="center">
-   <img src="media/heatmaps/simple_model(failed)3/model_simple_error_140_FN.jpg" width="400">
+   <img src="media/heatmaps/simple_model(failed)3/model_simple_error_140_FN.jpg" width="700">
 </p>
 
 **Insight:**
@@ -202,7 +202,7 @@ After observing persistent overfitting in larger models, I tested a **"Slim" app
 * **Test Accuracy:** **95%**
 * **Analysis:** Grad-CAM visualizations showed scattered and unstable attention patterns.
 <p align="center">
-  <img src="media/heatmaps/simple_model(failed)4/failed_model_simple_error_107_FN.jpg" width="400">
+  <img src="media/heatmaps/simple_model(failed)4/failed_model_simple_error_107_FN.jpg" width="700">
 </p>
 
 * **Conclusion:** The excessive downscaling caused a **bottleneck effect**. The architecture lacked the necessary depth to extract subtle, high-resolution features, making it difficult to distinguish specific defect patterns from background noise. This clear visualization of model ambiguity guided the decision for the final architecture adjustment.
@@ -226,9 +226,9 @@ The final iteration was designed to combine the depth of the larger models with 
 * **Performance:** Only **one misclassification** on the entire test set.
 * **Interpretability:** Grad-CAM confirmed that the model now focuses **precisely on the defect regions** with high confidence and sharp localization.
 <p align="center">
-   <img src="media/heatmaps/final_simple_model/correct/model_simple_error_140_FN.jpg" width="400">
+   <img src="media/heatmaps/final_simple_model/correct/model_simple_error_140_FN.jpg" width="700">
    <br>
-   <img src="media/heatmaps/final_simple_model/correct/model_simple_error_240_FN.jpg" width="400">
+   <img src="media/heatmaps/final_simple_model/correct/model_simple_error_240_FN.jpg" width="700">
 </p>
 
 **Critical Observation (False Negative Analysis):**
@@ -239,7 +239,7 @@ Upon manual inspection of the single misclassified test image, I discovered a di
 
 This indicates that the model's "error" was actually a correct identification of a mislabeled sample. It confirms that the system has moved beyond memorizing labels and has instead developed a robust understanding of true defect patterns, aligning more closely with human visual logic than with noise in the dataset's ground truth.
 <p align="center">
-   <img src="media/heatmaps/final_simple_model/failed/model_simple_error_80_FN.jpg" width="400">
+   <img src="media/heatmaps/final_simple_model/failed/model_simple_error_80_FN.jpg" width="700">
 </p>
 
 ---
