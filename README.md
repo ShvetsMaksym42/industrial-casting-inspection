@@ -65,13 +65,13 @@ Manual quality control in casting suffers often from:
 
 The project implements a full end-to-end pipeline for automated defect detection, covering everything from raw data processing to deep model interpretability.
 
-### 1. Custom Dataset & Data Engineering
+### 🔷 1. Custom Dataset & Data Engineering
 A robust `Dataset` class was engineered in PyTorch to handle the specific needs of industrial imagery:
 * **Dynamic Loading:** Efficient memory management for high-resolution casting images.
 * **Extensive Augmentation:** To combat the small dataset size, I implemented a pipeline including random rotations, flips, and color jittering to simulate varying factory floor conditions.
 * **Balanced Sampling:** Strategic shuffling and batching to ensure the model doesn't develop a bias toward "OK" products.
 
-### 2. Model Architectures
+### 🔷 2. Model Architectures
 Two distinct philosophies were compared to find the industrial "sweet spot":
 * **ResNet18 (The Benchmark):** A pre-trained industry-standard architecture. While it provides a high-accuracy baseline, its size (**64.5 MB**) presents challenges for edge-device deployment.
 * **Custom CNN (The Optimized Solution):** **Lightweight CNN** built using ResNet-style skip connections.
@@ -79,14 +79,14 @@ Two distinct philosophies were compared to find the industrial "sweet spot":
     * **Efficiency:** Optimized to a compact **4 MB**, making it 16x smaller than ResNet18 while maintaining competitive performance.
     * **Design:** Specifically tuned to capture subtle casting flaws without the overhead of massive parameters.
 
-### 3. Training & Regularization
+### 🔷 3. Training & Regularization
 * **Optimization:** Used Binary Cross-Entropy loss incorporating a **`pos_weight` parameter** to handle class imbalance. Used **Adam optimizer** for stable convergence and faster training.
 * **Regularization & Generalization:** Given the relatively small dataset size, I applied a multi-layered regularization strategy to prevent overfitting:
     * **Dropout Layers:** To de-activate neurons randomly during training, forcing the network to learn robust, non-redundant features.
     * **Weight Decay (L2 Regularization):** To penalize large weights and maintain a simpler, more generalizable model.
     * **Data Augmentation:** To synthetically expand the training variety, ensuring the models don't just "memorize" the limited training set.
 
-### 4. Evaluation & Interpretability
+### 🔷 4. Evaluation & Interpretability
 * **Performance Analysis:** Evaluation was conducted using **Confusion Matrices** to look beyond simple accuracy. This allowed for a detailed breakdown of classification errors, specifically identifying **False Negatives**.
 * **Explainable AI (Grad-CAM):** Integrated Heatmaps to verify that the model is actually looking at **defects** (cracks, holes) rather than background noise or lighting artifacts.
 * **Trade-off Analysis:** A final comparison of model size vs. inference speed vs. accuracy to determine the best candidate for production.
@@ -165,7 +165,7 @@ To verify the reliability of the high accuracy scores, I applied **Grad-CAM** to
 **Decision:**
 The visualization revealed that the custom model had not truly learned the defect patterns. This insight directly guided the next stage: adjusting the architecture to increase its feature-extraction capabilities.
 
-### Step 5: Scaling the Architecture (Custom CNN v2)
+### 🔷 Step 5: Scaling the Architecture (Custom CNN v2)
 
 Following the insights from Grad-CAM, I decided to increase the model's capacity to help it capture more complex defect patterns.
 
@@ -303,10 +303,10 @@ The final comparison shows that the **Custom CNN** achieves industrial-grade per
 
 This project serves as a robust foundation for automated industrial quality control. To move from a research prototype to a production-ready system, the following directions are proposed:
 
-### 1. Deployment
+### 🔷 1. Deployment
 * **Web Integration:** Developing a lightweight web interface (using FastAPI/Streamlit) to allow real-time image uploads and instant defect classification.
 
-### 2. Hybrid Localization Pipeline (CNN + YOLO Cascade)
+### 🔷 2. Hybrid Localization Pipeline (CNN + YOLO Cascade)
 To improve both precision and computational efficiency, I propose a two-stage inspection workflow:
 * **Stage 1 (Filtering):** The lightweight **Custom CNN** acts as a high-speed gatekeeper, identifying whether a part is "Normal" or "Defective."
 * **Stage 2 (Localization):** Only if a part is flagged as defective, a **YOLO-based object detection** model is triggered to draw precise bounding boxes around specific flaws.
