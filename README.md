@@ -19,6 +19,11 @@
 > [!NOTE]
 > That project focused on model development and evaluation. Deployment in a real-time system is planned for future work.
 
+### 🛠️ Tech Stack
+* **Framework:** `PyTorch`
+* **Computer Vision & Visualization:** `Albumentations`, `OpenCV`, `Grad-CAM`, `TensorBoard`
+* **Core:** `NumPy`, `Scikit-learn`, `OS`
+
 ---
 
 ## 1. Problem Statement
