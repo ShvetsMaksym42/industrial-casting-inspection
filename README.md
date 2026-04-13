@@ -3,29 +3,37 @@
 ![Computer Vision](https://img.shields.io/badge/Area-Computer%20Vision-success)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-## 1. Introduction and Problem Statement
+## 🚀 Result at a Glance
+
+| Metric | Performance / Outcome |
+| :--- | :--- |
+| **Accuracy** | **99.6%** on industrial casting dataset |
+| **Efficiency** | **16x smaller** than ResNet18 (4MB vs 64MB) |
+| **Reliability** | Verified with **Grad-CAM**|
+| **Deployment** | Optimized for **Real-time Edge devices** |
+
+### 🏭 Industrial Impact
+* **Cost Efficiency:** Cuts manual inspection time through automation.
+* **Scalability:** Built for high-speed production lines.
+* **Hardware Friendly:** Runs on low-power CPUs/Edge devices (no expensive GPUs needed).
+> [!NOTE]
+> That project focused on model development and evaluation. Deployment in a real-time system is planned for future work.
+
+---
+
+## 1. Problem Statement
 
 ### Overview
-This project addresses a key challenge in modern industrial casting: quality control through automated visual inspection. 
-Traditional manual inspection suffers from:
+Manual quality control in casting suffers often from:
 * **Human Factor:** Fatigue, subjectivity, and inconsistent defect detection.
 * **Scalability:** On high-speed production lines, humans physically cannot inspect every single part.
-* **Cost:** Maintaining a large staff of inspectors is expensive for the enterprise.
+* **Cost:** Maintaining 24/7 manual inspection is a high operational cost.
 
-This project demonstrates the use of **Computer Vision (CV)** to automate the classification of casting parts into **"OK"** (defect-free) and **"Defective"** categories.
-
-### The Challenge (Accuracy vs. Resources)
-Automation in this field faces a classic engineering dilemma:
-1. **Complex Architectures (e.g., ResNet18):** Provide near-perfect accuracy but require powerful GPUs, which are expensive to deploy on the factory floor.
-2. **Lightweight Architectures (Custom CNN):** Run fast even on cheap CPUs/edge devices but might struggle with subtle or complex defect patterns.
-
-**Goal:** Develop and compare two solutions — a highly efficient **Custom CNN** and a robust **Pre-trained ResNet18** — to find the optimal balance for industrial deployment.
+**Goal:** Build a Computer Vision system to classify parts as "OK" or "Defective" while balancing high accuracy and low resource consumption.
 
 ---
 
 ## 2. Dataset
-
-The models were trained and evaluated using the **Casting Product Image Data for Quality Inspection** dataset.
 
 * **Source:** [Casting Product Dataset on Kaggle](https://www.kaggle.com/datasets/ravirajsinh45/real-life-industrial-dataset-of-casting-product/data)
 * **Content:** 1,300 images of top-view of submersible pump impeller.
@@ -42,12 +50,13 @@ The models were trained and evaluated using the **Casting Product Image Data for
     * Random rotations and horizontal/vertical flips.
     * Brightness and contrast adjustments.
     * Perspective transforms to simulate camera positioning variances.
-  
-Note: Small and imbalanced datasets are very common in real-world industrial settings, making these techniques directly relevant for practical deployment.  
+
+> [!NOTE]
+> Small and imbalanced datasets are very common in real-world industrial settings, making these techniques directly relevant for practical deployment.  
 
 ---
 
-## 3. Development Pipeline
+## 3. Technical Approach
 
 The project implements a full end-to-end pipeline for automated defect detection, covering everything from raw data processing to deep model interpretability.
 
@@ -60,13 +69,13 @@ A robust `Dataset` class was engineered in PyTorch to handle the specific needs 
 ### 2. Model Architectures
 Two distinct philosophies were compared to find the industrial "sweet spot":
 * **ResNet18 (The Benchmark):** A pre-trained industry-standard architecture. While it provides a high-accuracy baseline, its size (**64.5 MB**) presents challenges for edge-device deployment.
-* **Custom CNN (The Optimized Solution):** A bespoke architecture inspired by ResNet principles.
+* **Custom CNN (The Optimized Solution):** **Lightweight CNN** built using ResNet-style skip connections.
     * **Features:** Utilizes **Skip Connections** and **Residual Blocks** to ensure smooth gradient flow.
     * **Efficiency:** Optimized to a compact **4 MB**, making it 16x smaller than ResNet18 while maintaining competitive performance.
     * **Design:** Specifically tuned to capture subtle casting flaws without the overhead of massive parameters.
 
 ### 3. Training & Regularization
-* **Optimization:** Used Binary Cross-Entropy loss incorporating a **`pos_weight` parameter** to handle class imbalance. I leveraged the **Adam optimizer** for its efficient adaptive learning rate capabilities, ensuring stable convergence.
+* **Optimization:** Used Binary Cross-Entropy loss incorporating a **`pos_weight` parameter** to handle class imbalance. Used **Adam optimizer** for stable convergence and faster training.
 * **Regularization & Generalization:** Given the relatively small dataset size, I applied a multi-layered regularization strategy to prevent overfitting:
     * **Dropout Layers:** To de-activate neurons randomly during training, forcing the network to learn robust, non-redundant features.
     * **Weight Decay (L2 Regularization):** To penalize large weights and maintain a simpler, more generalizable model.
@@ -83,7 +92,7 @@ Two distinct philosophies were compared to find the industrial "sweet spot":
 
 The development of the automated defect detection system was an **iterative process**, guided by careful observation, experimentation, and analysis of model behavior. Each step involved evaluating both **quantitative performance** and **qualitative interpretability** to ensure the model not only achieved high accuracy but also correctly learned to identify casting defects.
 
-### Step 1: Data Augmentation Strategy
+### 🔷 Step 1: Baseline Augmentation
 
 Due to the **small size of the dataset**, I implemented a dynamic augmentation pipeline. The transformations are applied **on-the-fly during training**, meaning that the model encounters a different variation of the same image in every epoch. This approach helps the model generalize better and prevents early overfitting.
 
@@ -101,7 +110,7 @@ Due to the **small size of the dataset**, I implemented a dynamic augmentation p
    <img src="media/augmentation/Augmentated_Images.png" width="1000">
 </p>
 
-### Step 2: Custom ResNet-like Architecture (v1)
+### 🔷 Step 2: Custom CNN (v1)
 
 The first approach was to design a lightweight CNN from scratch. To keep the description clean, the architecture follows a consistent modular pattern:
 
@@ -118,9 +127,9 @@ The first approach was to design a lightweight CNN from scratch. To keep the des
 * **Learning Rate:** $5 \cdot 10^{-4}$ | **Epochs:** 50
 * **Test Accuracy:** **99.6%**
 
-### Step 3: Transfer Learning with ResNet18
+### 🔷 Step 3: Transfer Learning with ResNet18
 
-To benchmark my custom architecture, I used a **Pretrained ResNet18** (ImageNet weights). This stage was divided into two experimental phases:
+Benchmarked against **ResNet18** (ImageNet weights) across two experimental phases:
 
 **Phase A: Feature Extraction**
 * **Approach:** All backbone layers were **frozen**; only the classification head was trained.
@@ -133,7 +142,7 @@ To benchmark my custom architecture, I used a **Pretrained ResNet18** (ImageNet 
 * **Parameters:** Lowered LR: $1 \cdot 10^{-5}$ to preserve pretrained features while fine-tuning.
 * **Result:** **100% Accuracy**.
 
-### Step 4: Interpretability Check (Grad-CAM Visualization)
+### 🔷 Step 4: Interpretability Check (Grad-CAM Visualization)
 
 To verify the reliability of the high accuracy scores, I applied **Grad-CAM** to visualize the models' attention regions. This qualitative analysis was crucial to distinguish between true learning and potential overfitting.
 
@@ -151,7 +160,7 @@ To verify the reliability of the high accuracy scores, I applied **Grad-CAM** to
 **Decision:**
 The visualization revealed that the custom model had not truly learned the defect patterns. This insight directly guided the next stage: adjusting the architecture to increase its feature-extraction capabilities.
 
-### Step 5: Scaling the Architecture (Custom Model v2)
+### Step 5: Scaling the Architecture (Custom CNN v2)
 
 Following the insights from Grad-CAM, I decided to increase the model's capacity to help it capture more complex defect patterns.
 
@@ -162,7 +171,7 @@ Following the insights from Grad-CAM, I decided to increase the model's capacity
 
 **Outcome:**
 * **Test Accuracy:** **100%**
-* **The Reality Check:** Despite the perfect score, **Grad-CAM visualizations** showed the model was focusing on irrelevant background regions rather than the defects themselves.
+* **The Reality Check:** Despite the perfect score, **Grad-CAM visualizations** showed the model was focusing on irrelevant regions rather than the defects themselves.
 <p align="center">
   <img src="media/heatmaps/simple_model(failed)2/model_simple_error_180_FN.jpg" width="700">
 </p>
@@ -170,7 +179,7 @@ Following the insights from Grad-CAM, I decided to increase the model's capacity
 **Key Insight:**
 This was a clear case of **overfitting**. Simply increasing the model size and training time allowed the network to "memorize" the dataset environment. This confirmed that raw capacity does not guarantee correct feature learning; the focus needed to shift toward **regularization**.
 
-### Step 6: Advanced Augmentation (Custom Model v3)
+### 🔷 Step 6: Advanced Augmentation (Custom CNN v3)
 
 To combat the persistent overfitting observed in the previous stage, I significantly increased the complexity of the data augmentation pipeline. The goal was to force the model to focus on localized defect features rather than global image patterns.
 
@@ -179,6 +188,10 @@ To combat the persistent overfitting observed in the previous stage, I significa
 * **Lighting & Gamma:** Used `OneOf` blocks to stochastically apply `RandomBrightnessContrast` or `RandomGamma`.
 * **Noise & Blur:** Introduced `OneOf` blocks for `GaussNoise` and `GaussianBlur` to simulate sensor degradation and focus inconsistencies.
 * **Regularization:** Applied `CoarseDropout` (Cutout) to randomly mask small rectangular regions, forcing the model to find alternative features for classification.
+
+<p align="center">
+   <img src="media/augmentation/Augmentated_Image2.png" width="1000">
+</p>
 
 **Outcome:**
 * **Test Accuracy:** **100%**
@@ -190,7 +203,7 @@ To combat the persistent overfitting observed in the previous stage, I significa
 **Insight:**
 Even with advanced augmentation, the increased depth of the custom architecture (v2/v3) seemed to lead the model toward memorizing the dataset's "center-heavy" bias. This persistent overfitting signaled that the issue might lie in the architecture's balance.
 
-### Step 7: Architecture Downscaling & Regularization (Custom Model v4)
+### 🔷 Step 7: Architecture Downscaling & Regularization (Custom CNN v4)
 
 After observing persistent overfitting in larger models, I tested a **"Slim" approach**. The hypothesis was that a significantly smaller model, combined with stronger regularization, would be forced to learn only the most essential features.
 
@@ -212,7 +225,7 @@ After observing persistent overfitting in larger models, I tested a **"Slim" app
 
 * **Conclusion:** The excessive downscaling caused a **bottleneck effect**. The architecture lacked the necessary depth to extract subtle, high-resolution features, making it difficult to distinguish specific defect patterns from background noise. This clear visualization of model ambiguity guided the decision for the final architecture adjustment.
 
-### Step 8: Final Architecture (Optimal Balance)
+### 🔷 Step 8: Final Architecture (Optimal Balance)
 
 The final iteration was designed to combine the depth of the larger models with the spatial precision required for accurate defect localization. By adjusting the downsampling strategy and maintaining aggressive regularization, I achieved the most stable and interpretable results.
 
