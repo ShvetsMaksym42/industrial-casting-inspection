@@ -17,7 +17,7 @@
 * **Scalability:** Built for high-speed production lines.
 * **Hardware Friendly:** Runs on low-power CPUs/Edge devices (no expensive GPUs needed).
 > [!NOTE]
-> That project focused on model development and evaluation. Deployment in a real-time system is planned for future work.
+> That project focused on model development and evaluation. Deployment in a real-time system is planned as next step.
 
 ### 🛠️ Tech Stack
 * **Framework:** `PyTorch`
@@ -260,7 +260,7 @@ Upon manual inspection of the single misclassified test image, I discovered a di
 * **Model Prediction:** Classified as "Normal".
 * **Visual Reality:** The image contains **no visible casting defects**. 
 
-This indicates that the model's "error" was actually a correct identification of a mislabeled sample. It confirms that the system has moved beyond memorizing labels and has instead developed a robust understanding of true defect patterns, aligning more closely with human visual logic than with noise in the dataset's ground truth.
+This indicates that the model's 'error' was actually a correct identification of a mislabeled sample. It confirms that the system has moved beyond memorizing labels, demonstrating robust generalization. The model's predictions align more closely with human visual logic and actual defect morphology than with the noise in the dataset's ground truth.
 <p align="center">
    <img src="media/heatmaps/final_simple_model/failed/model_simple_error_80_FN.jpg" width="700">
 </p>
@@ -301,13 +301,13 @@ The final comparison shows that the **Custom CNN** achieves industrial-grade per
 
 ## 7. Next Steps
 
-This project serves as a robust foundation for automated industrial quality control. To move from a research prototype to a production-ready system, the following directions are proposed:
+This project serves as a foundation for an automated industrial inspection system. To transition from a classification model to a full real-time deployment pipeline, the following directions are proposed:
 
 ### 🔷 1. Deployment
 * **Web Integration:** Developing a lightweight web interface (using FastAPI/Streamlit) to allow real-time image uploads and instant defect classification.
 
 ### 🔷 2. Hybrid Localization Pipeline (CNN + YOLO Cascade)
-To improve both precision and computational efficiency, I propose a two-stage inspection workflow:
+To improve both precision and computational efficiency, I plan to implement a two-stage inspection workflow:
 * **Stage 1 (Filtering):** The lightweight **Custom CNN** acts as a high-speed gatekeeper, identifying whether a part is "Normal" or "Defective."
 * **Stage 2 (Localization):** Only if a part is flagged as defective, a **YOLO-based object detection** model is triggered to draw precise bounding boxes around specific flaws.
 * **Evaluation:** A comparative study will be conducted to measure the trade-offs between a standalone YOLO model versus this **CNN-YOLO cascade** in terms of latency (ms/image) and industrial practicality.
